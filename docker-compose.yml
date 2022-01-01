@@ -28,5 +28,7 @@ services:
       dockerfile: Dockerfile.dev
       context: ./client
     volumes:
-      - /app/node_modules
-      - ./client:/app
+      # - /app/node_modules
+      - ./client/pages:/app/pages
+      - ./client/public:/app/public
+      - ./client/styles:/app/styles
