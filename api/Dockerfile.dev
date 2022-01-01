@@ -3,4 +3,5 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json ./
 RUN yarn install
+COPY . .
 CMD ["yarn", "dev"]
