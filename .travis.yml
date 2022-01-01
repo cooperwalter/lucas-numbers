@@ -5,4 +5,17 @@ before_install:
   - docker build -t cooperwalter/api-test -f ./api/Dockerfile.dev ./api
 
 script:
+  # Run tests
   - docker run -e CI=true cooperwalter/api-test npm test
+
+after_success:
+  # Build images
+  - docker build -t cooperwalter/lucas-numbers-client ./client
+  - docker build -t cooperwalter/lucas-numbers-nginx ./nginx
+  - docker build -t cooperwalter/lucas-numbers-api ./api
+  # Log into docker CLI, env variables are defined in travis dashboard
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  # Push images to docker hub
+  - docker push cooperwalter/lucas-numbers-client
+  - docker push cooperwalter/lucas-numbers-nginx
+  - docker push cooperwalter/lucas-numbers-api
