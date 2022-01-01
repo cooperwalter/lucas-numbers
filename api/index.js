@@ -28,7 +28,7 @@ router.get("/lucas/:n", async (ctx, next) => {
     throw err;
   }
 
-  ctx.body = { value };
+  ctx.body = value;
   ctx.status = 200;
   next();
 });
