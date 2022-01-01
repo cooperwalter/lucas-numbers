@@ -1,13 +1,52 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import React from "react";
+import Head from "next/head";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import styles from "../styles/Home.module.css";
+import * as api from "../services/api";
 
 export default function Home() {
+  const [lucasNumber, setLucasNumber] = React.useState(undefined);
+  const handleSubmit = async (values, { setSubmitting }) => {
+    setSubmitting(true);
+    const number = await api.fetchLucasNumber(values.n);
+    console.log("number", number);
+    setLucasNumber(number);
+    setSubmitting(false);
+  };
   return (
     <div className={styles.container}>
       <Head>
-        <title>Create Next App</title>
+        <title>Lucas Numbers Calculator</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      <Formik
+        initialValues={{ n: "" }}
+        validate={(values) => {
+          const errors = {};
+          const parsed = parseInt(values.n);
+          if (!values.n) {
+            errors.n = "n is required";
+          } else if (!Number.isInteger(parsed)) {
+            errors.n = "n must be an integer";
+          } else if (parsed < 0) {
+            errors.n = "n must be positive";
+          }
+          return errors;
+        }}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting }) => (
+          <Form>
+            <Field type="text" name="n" />
+            <ErrorMessage name="n" component="div" />
+            <button type="submit" disabled={isSubmitting}>
+              Submit
+            </button>
+          </Form>
+        )}
+      </Formik>
+      <div>Lucas Number: {lucasNumber}</div>
 
       <main className={styles.main}>
         <h1 className={styles.title}>
@@ -15,7 +54,7 @@ export default function Home() {
         </h1>
 
         <p className={styles.description}>
-          Get started by editing{' '}
+          Get started by editing{" "}
           <code className={styles.code}>pages/index.js</code>
         </p>
 
@@ -56,10 +95,10 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by{" "}
           <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
         </a>
       </footer>
     </div>
-  )
+  );
 }
