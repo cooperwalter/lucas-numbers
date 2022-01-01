@@ -1,0 +1,8 @@
+services:
+  - docker
+
+before_install:
+  - docker build -t cooperwalter/api-test -f ./api/Dockerfile.dev ./api
+
+script:
+  - docker run -e CI=true cooperwalter/api-test npm test
